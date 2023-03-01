@@ -1,7 +1,7 @@
 <?php 
 
     //Conexion DB
-    require "includes/config/database.php";
+    require 'includes/app.php';
     $DB = conectarDB();
 
     //Crear Usuario Admin

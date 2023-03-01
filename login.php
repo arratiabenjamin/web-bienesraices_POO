@@ -2,7 +2,7 @@
     declare(strict_types=1);
 
     //Conexion DB
-    require "includes/config/database.php";
+    require "includes/app.php";
     $DB = conectarDB();
 
     //Almacenar errores
@@ -58,7 +58,6 @@
 
     }
 
-    require "includes/funciones.php";
     incluirTemplate('header');
 ?>
 

@@ -1,6 +1,6 @@
 <?php
     declare(strict_types=1);
-    require "includes/funciones.php";
+    require "includes/app.php";
     incluirTemplate('header');
 ?>
 
@@ -16,9 +16,6 @@
     </main>
 
 <?php
-
-    //Cerrar Conexion DB
-    mysqli_close($DB);
 
     incluirTemplate('footer');
 ?>

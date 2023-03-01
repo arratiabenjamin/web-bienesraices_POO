@@ -1,6 +1,4 @@
 <?php 
-
-    require "includes/config/database.php";
     $DB = conectarDB();
 
     if($_GET['id']){

@@ -1,6 +1,10 @@
 <?php
-    require "../../includes/funciones.php";
-    require "../../includes/config/database.php";
+    require "../../includes/app.php";
+    use App\Propiedad;
+    use Intervention\Image\ImageManagerStatic as IMS;
+
+    //Atenticar Sesion
+    authLogin();
 
     //DataBase
     $DB = conectarDB();
@@ -11,100 +15,36 @@
 
     //Regristo para Campos Vacios
     $errores = [];
-    
-    //Inicializar variables de Campos
-    $titulo = '';
-    $precio = '';
-    $descripcion = '';
-    $habitaciones = '';
-    $wc = '';
-    $estacionamientos = '';
-    $vendedorId = '';
-    $imagen = '';
 
-    // $_SERVER - Nos da informacion detallada sobre el servidor
-    // $_SERVER['REQUEST_METHOD'] - Nos dira el metodo de envio de un formulario
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        //$_POST - Nos dira toda la informacion que se envio desde un formulario
-        // echo '<pre>';
-        // var_dump($_POST);
-        // echo '</pre>';
+        //Crear Objeto de Propieadad
+        $propiedad = new Propiedad($_POST);
+        //Generar Nombre de Imagen (Hashear)
+        $nombreImagen = md5( uniqid( rand(), true ) ) . '.jpg';
 
-        //$_FILES - Nos dira la informacion sobre los archivos subidos
-        // echo '<pre>';
-        // var_dump($_FILES);
-        // echo '</pre>';
-
-
-        //Guardar Datos de Formulario
-        //mysqli_real_escape_string() - Es para poder Sanitizar la entrada de datos que realizan los usuarios.
-        //(Sanitizar es para asegurar que los usuarios no introduzcan datos para vulnerar la pagina).
-        $titulo = mysqli_real_escape_string( $DB, $_POST['titulo'] );
-        $precio = mysqli_real_escape_string( $DB, $_POST['precio'] );
-        $descripcion = mysqli_real_escape_string( $DB, $_POST['descripcion'] );
-        $habitaciones = mysqli_real_escape_string( $DB, $_POST['habitaciones'] );
-        $wc = mysqli_real_escape_string( $DB, $_POST['wc'] );
-        $estacionamientos = mysqli_real_escape_string( $DB, $_POST['estacionamientos'] );
-        $vendedorId = mysqli_real_escape_string( $DB, $_POST['vendedor'] );
-        $imagen = $_FILES['imagen'];
-        $creado = date('Y/m/d');
-
-        //Ingresar un error al array error si no se introdujo un dato
-        if(!$titulo) {
-            $errores[] = "Debes Añadir un Titulo";
-        }
-        if(!$precio) {
-            $errores[] = 'El Precio es Obligatorio';
-        }
-        if( strlen( $descripcion ) < 50 ) {
-            $errores[] = 'La Descripción es Obligatoria y Debe Tener al Menos 50 cCaracteres';
-        }
-        if(!$habitaciones) {
-            $errores[] = 'El Número de Habitaciones es Obligatorio';
-        }
-        if(!$wc) {
-            $errores[] = 'El Número de Baños es Obligatorio';
-        }
-        if(!$estacionamientos) {
-            $errores[] = 'El Número de Lugares de Estacionamiento es Obligatorio';
-        }
-        if(!$vendedorId) {
-            $errores[] = 'Elige un Vendedor';
-        }
-        if(!$imagen['name'] || $imagen['error']) {
-            $errores[] = 'Se Debe Añadir una Imagen';
+        if ($_FILES['imagen']['tmp_name']) {
+            //Setear Nombre de Imagen
+            $propiedad->setImagen($nombreImagen);
+            //Realizar Resize a Imagen con Intervention
+            $imagen = IMS::make($_FILES['imagen']['tmp_name'])->fit(800,600);
         }
 
-        //Limitar Peso de Imagen
-        $limite = 1000 * 1000; //Max 1MB;
-        if($imagen['size'] > $limite) {
-            $errores[] = 'Su Imagen es Demasiado Pesada (Limite: 1MB)';
-        }
+        //Validar Datos
+        $errores = $propiedad->validar();
 
         //Insertar Datos en DB si errores esta vacio
         if (empty($errores)) {
 
-            //Subida de Archivos
-
-            // Crear la Carpeta
-            $carpetaImagenes = '../../imagenes/';
-
-            //Si no existe, crearla
-            if(!is_dir($carpetaImagenes)) {
-                mkdir($carpetaImagenes);
+            if(!is_dir(CARPETA_IMAGENES)) {
+                mkdir(CARPETA_IMAGENES);
             }
 
-            //Generar Nombre de Imagen (Hashear)
-            $nombreImagen = md5( uniqid( rand(), true ) ) . '.jpg';
-
-            //Subir Imagen
-            move_uploaded_file($imagen['tmp_name'], $carpetaImagenes . $nombreImagen);
-
+            //Guardar Imagen
+            $imagen->save(CARPETA_IMAGENES . $nombreImagen);
 
             //Insertar Datos
-            $queryInsert = "INSERT INTO propiedades ( titulo, precio, imagen, descripcion, habitaciones, wc, estacionamientos, creado, vendedores_id ) VALUES ( '$titulo', '$precio', '$nombreImagen', '$descripcion','$habitaciones', '$wc', '$estacionamientos', '$creado', '$vendedorId' )";
-            $resultado = mysqli_query($DB, $queryInsert);
+            $resultado = $propiedad->guardar();
 
             //Redireccionar al panel de admin luego de insertar todo
             if($resultado) {
@@ -168,7 +108,7 @@
             <fieldset>
                 <legend>Vendedor</legend>
 
-                <select name="vendedor" id="vendedor">
+                <select name="vendedorId">
                     <option value="" selected>-- Seleccione --</option>
                     
                     <?php foreach($vendedores as $vendedor) : ?>
