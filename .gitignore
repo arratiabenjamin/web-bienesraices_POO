@@ -1,0 +1,8 @@
+node_modules/
+src/
+gulpfile.js
+package.json
+package-lock.json
+DB_BienesRaices.mwb
+DML_BienesRaices.sql
+Key
