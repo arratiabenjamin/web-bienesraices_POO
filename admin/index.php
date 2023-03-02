@@ -4,14 +4,9 @@
     //Atenticar Sesion
     authLogin();
     
-    //Importar Conexion con la DB
-    $DB = conectarDB();
-
-    //Escribir el Query
-    $querySelectPropiedades = "SELECT * FROM propiedades";
-
-    //Realizar Query
-    $propiedades = mysqli_query($DB, $querySelectPropiedades);
+    //Importar Clase Propiedad
+    use App\Propiedad;
+    $propiedades = Propiedad::all();
 
     //ELIMINAR PROPIEDAD
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -79,16 +74,16 @@
             <?php foreach($propiedades as $propiedad) : ?>
 
                 <tbody>
-                    <td><?php echo $propiedad['id'] ?></td>
-                    <td><?php echo $propiedad['titulo'] ?></td>
-                    <td class="centrado-horizontal"> <img src="/imagenes/<?php echo $propiedad['imagen'] ?>" alt="Imagen Propiedad" class="imagen-tabla"> </td>
-                    <td><?php echo $propiedad['precio'] ?></td>
+                    <td><?php echo $propiedad->id; ?></td>
+                    <td><?php echo $propiedad->titulo; ?></td>
+                    <td class="centrado-horizontal"> <img src="/imagenes/<?php echo $propiedad->imagen; ?>" alt="Imagen Propiedad" class="imagen-tabla"> </td>
+                    <td><?php echo $propiedad->precio; ?></td>
                     <td>
                         <form method="POST" class="w-100">
-                            <input type="hidden" name="id" value="<?php echo $propiedad['id']; ?>">
+                            <input type="hidden" name="id" value="<?php echo $propiedad->id; ?>">
                             <input type="submit" class="boton-rojo-block" value="Eliminar">
                         </form>
-                        <a href="/admin/propiedades/actualizar.php?id=<?php echo $propiedad['id']; ?>" class="boton-verde-block">Actualizar</a>
+                        <a href="/admin/propiedades/actualizar.php?id=<?php echo $propiedad->id; ?>" class="boton-verde-block">Actualizar</a>
                     </td>
                 </tbody>
 
@@ -101,9 +96,6 @@
 
 <?php
 
-    //Cerrar Conexion con DB
-    // No es necesario pero si es una buena practica hacerlo
-    mysqli_close($DB);
 
     incluirTemplate('footer');
 ?>

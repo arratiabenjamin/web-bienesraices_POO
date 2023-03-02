@@ -6,6 +6,9 @@
     //Atenticar Sesion
     authLogin();
 
+    //Creacion Propiedad - Evitar Error con Casillas Vacias.
+    $propiedad = new Propiedad();
+
     //DataBase
     $DB = conectarDB();
     
@@ -76,54 +79,7 @@
         <!-- enctype - Para subir archivos -->
         <form class="formulario" method="POST" action="/admin/propiedades/crear.php" enctype="multipart/form-data">
 
-            <fieldset>
-                <legend>Informacion General</legend>
-                
-                <label for="titulo">Titulo:</label>
-                <input type="text" id="titulo" name="titulo" placeholder="Titulo Propiedad" value="<?php echo $titulo; ?>">
-                
-                <label for="precio">Precio:</label>
-                <input type="number" id="precio" name="precio" placeholder="Precio Propiedad" value="<?php echo $precio; ?>" min="100000">
-                
-                <label for="imagen">Imagen:</label>
-                <input type="file" id="imagen" accept="image/jpeg, image/png" name="imagen">
-
-                <label for="descripcion">Descripcion:</label>
-                <textarea id="descripcion" name="descripcion"><?php echo $descripcion; ?></textarea>
-            </fieldset>
-
-            <fieldset>
-                <legend>Informacion Propiedad</legend>
-
-                <label for="habitaciones">Habitaciones:</label>
-                <input type="number" id="habitaciones" name="habitaciones" placeholder="Ej: 3" value="<?php echo $habitaciones; ?>" min="1" max="9">
-
-                <label for="wc">Baños:</label>
-                <input type="number" id="wc" name="wc" placeholder="Ej: 3" value="<?php echo $wc; ?>" min="1" max="9">
-
-                <label for="estacionamientos">Estacionamientos:</label>
-                <input type="number" id="estacionamientos" name="estacionamientos" placeholder="Ej: 3" value="<?php echo $estacionamientos; ?>" min="1" max="9">
-            </fieldset>
-
-            <fieldset>
-                <legend>Vendedor</legend>
-
-                <select name="vendedorId">
-                    <option value="" selected>-- Seleccione --</option>
-                    
-                    <?php foreach($vendedores as $vendedor) : ?>
-                        <!-- utilizamos un operador ternario para añadir el selected al vendedor -->
-                        <!-- en value se llama a la propiedad id de cada registro para asi darle un valor -->
-                        <!-- en el texto se imprime el nombre y apellido de cada propiedad -->
-                        <option <?php echo $vendedorId === $vendedor['id'] ? 'selected' : ''; ?> 
-                        value="<?php echo $vendedor['id']; ?>">
-                            <?php echo $vendedor['nombre'] . " " . $vendedor['apellido']; ?>
-                        </option>
-                    <?php endforeach; ?>
- 
-
-                </select>
-            </fieldset>
+            <?php include '../../includes/templates/formulario_propiedades.php'; ?>
 
             <input type="submit" value="Crear Propiedad" class="boton-verde">
 

@@ -28,6 +28,7 @@
             self::$db = $database;
         }
 
+        //Asignar Valores a Atributos
         public function __construct($args = [])
         {
             
@@ -40,10 +41,11 @@
             $this->wc = $args['wc'] ?? '';
             $this->estacionamientos = $args['estacionamientos'] ?? '';
             $this->creado = date('Y/m/d');
-            $this->vendedorId = $args['vendedorId'] ?? '';
+            $this->vendedorId = $args['vendedorId'] ?? 1;
 
         }
 
+        //Subir a la DB
         public function guardar() {
 
             $atributos = $this->sanitizarDatos();
@@ -68,6 +70,7 @@
             }
         }
 
+        //Asignar Keys y Values a Array Assoc para luego Sanitizar
         public function atributos() {
             $atributos = [];
             foreach(self::$columnasDB as $columna) {
@@ -81,6 +84,7 @@
             return $atributos;
         }
 
+        //Sanitizacion
         public function sanitizarDatos() {
             
             $atributos = $this->atributos();
@@ -101,6 +105,7 @@
 
         }
 
+        //Verificar Errores en Formulario
         public function validar() {
 
             if(!$this->titulo) {
@@ -129,10 +134,60 @@
                 self::$errores[] = 'Se Debe Añadir una Imagen';
             }
 
-
             return self::$errores;
 
         }
 
+        //Listar Propiedades
+        public static function all() {
+            
+            $querySelectPropiedades = "SELECT * FROM propiedades";
+            $propiedades = self::consultarSQL($querySelectPropiedades);
+            return $propiedades;
+
+        }
+
+        public static function consultarSQL($query) {
+
+            //Consultar DB
+            $propiedades = self::$db->query($query);
+
+            //Asignar Todas las Propiedades como Obejetos al Array
+            $array = [];
+            foreach($propiedades as $propiedad) {
+                $array[] = self::crearObjeto($propiedad);
+            }
+
+            //Liberar Memoria (Mas que nada pasa Ayudar al Servidor)
+            //Es como el mysqli_close()
+            $propiedades->free();
+
+            //Retornar Resultados
+            return $array;
+
+        }
+
+        protected static function crearObjeto($propiedad) {
+
+            //Crear Objeto a Usar para Añadir Valores
+            $obj = new self;
+
+            //Iterar Array de Propiedad
+            foreach($propiedad as $key => $value){
+
+                //Si existe la Propieda en el Obejeto
+                if(property_exists($obj, $key)){
+
+                    //Añadir Valor a la Key
+                    $obj->$key = $value;
+
+                }
+
+            }
+
+            //Retornar Obj con sus Valores ya Asignados
+            return $obj;
+
+        }
 
     }
