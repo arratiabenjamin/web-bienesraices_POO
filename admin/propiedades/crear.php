@@ -22,15 +22,15 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         //Crear Objeto de Propieadad
-        $propiedad = new Propiedad($_POST);
+        $propiedad = new Propiedad($_POST['propiedad']);
         //Generar Nombre de Imagen (Hashear)
         $nombreImagen = md5( uniqid( rand(), true ) ) . '.jpg';
 
-        if ($_FILES['imagen']['tmp_name']) {
+        if ($_FILES['propiedad']['tmp_name']['imagen']) {
             //Setear Nombre de Imagen
             $propiedad->setImagen($nombreImagen);
             //Realizar Resize a Imagen con Intervention
-            $imagen = IMS::make($_FILES['imagen']['tmp_name'])->fit(800,600);
+            $imagen = IMS::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800,600);
         }
 
         //Validar Datos
@@ -47,12 +47,7 @@
             $imagen->save(CARPETA_IMAGENES . $nombreImagen);
 
             //Insertar Datos
-            $resultado = $propiedad->guardar();
-
-            //Redireccionar al panel de admin luego de insertar todo
-            if($resultado) {
-                header('Location: /admin?resultado=1');
-            }
+            $propiedad->guardar();
             
         }
 

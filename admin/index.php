@@ -6,7 +6,11 @@
     
     //Importar Clase Propiedad
     use App\Propiedad;
+use App\Vendedor;
+
     $propiedades = Propiedad::all();
+    $vendedores = Vendedor::all();
+    debugear($vendedores);
 
     //ELIMINAR PROPIEDAD
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -17,23 +21,10 @@
 
         if($propiedadEliminar) {
 
-            //Eliminar Imagen
-            $querySelectImagen = "SELECT imagen FROM propiedades WHERE id = $propiedadEliminar";
-            $imagen = mysqli_query($DB, $querySelectImagen);
-            $imagen = mysqli_fetch_assoc($imagen);
-            unlink('../imagenes/' . $imagen['imagen']);
+            //Obetener Valores de Propiedades
+            $propiedad = Propiedad::find($propiedadEliminar);
+            $propiedad->eliminar();
 
-
-            //Eliminarregistro de DB
-            // Query
-            $queryEliminarPropiedad = "DELETE FROM propiedades WHERE id = $propiedadEliminar";
-            //Realizar Query
-            $eliminarPropiedad = mysqli_query($DB, $queryEliminarPropiedad);
-            
-            if($eliminarPropiedad) {
-                //Mandar a /admin
-                header('Location: /admin?resultado=3');
-            }
         }
 
     }
