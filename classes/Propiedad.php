@@ -37,4 +37,38 @@
             $this->vendedorId = $args['vendedorId'] ?? '';
 
         }
+
+        //Verificar Errores en Formulario
+        public function validar() {
+
+            if(!$this->titulo) {
+                self::$errores[] = "Debes Añadir un Titulo";
+            }
+            if(!$this->precio) {
+                self::$errores[] = 'El Precio es Obligatorio';
+            }
+            if( strlen( $this->descripcion ) < 50 ) {
+                self::$errores[] = 'La Descripción es Obligatoria y Debe Tener al Menos 50 Caracteres';
+            }
+            if(!$this->habitaciones) {
+                self::$errores[] = 'El Número de Habitaciones es Obligatorio';
+            }
+            if(!$this->wc) {
+                self::$errores[] = 'El Número de Baños es Obligatorio';
+            }
+            if(!$this->estacionamientos) {
+                self::$errores[] = 'El Número de Lugares de Estacionamiento es Obligatorio';
+            }
+            if(!$this->vendedorId) {
+                self::$errores[] = 'Elige un Vendedor';
+            }
+
+            if(!$this->imagen) {
+                self::$errores[] = 'Se Debe Añadir una Imagen';
+            }
+
+            return self::$errores;
+
+        }
+
     }

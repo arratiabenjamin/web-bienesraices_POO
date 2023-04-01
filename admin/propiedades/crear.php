@@ -1,6 +1,7 @@
 <?php
     require "../../includes/app.php";
     use App\Propiedad;
+    use App\Vendedor;
     use Intervention\Image\ImageManagerStatic as IMS;
 
     //Atenticar Sesion
@@ -8,16 +9,10 @@
 
     //Creacion Propiedad - Evitar Error con Casillas Vacias.
     $propiedad = new Propiedad();
-
-    //DataBase
-    $DB = conectarDB();
-    
-    //Obetener Valores de Vendedores
-    $querySelectVendedores = "SELECT * FROM vendedores";
-    $vendedores = mysqli_query($DB, $querySelectVendedores);
+    $vendedores = Vendedor::all();
 
     //Regristo para Campos Vacios
-    $errores = [];
+    $errores = Propiedad::getErrores();
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -59,7 +54,7 @@
 ?>
 
     <main class="contenedor seccion">
-        <h1>Crear Propiedad</h1>
+        <h1>Registrar Propiedad</h1>
         
         <a href="/admin" class="boton-verde">Volver</a>
 
@@ -76,7 +71,7 @@
 
             <?php include '../../includes/templates/formulario_propiedades.php'; ?>
 
-            <input type="submit" value="Crear Propiedad" class="boton-verde">
+            <input type="submit" value="Registrar Propiedad" class="boton-verde">
 
         </form>
 

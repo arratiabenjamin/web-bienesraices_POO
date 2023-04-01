@@ -73,7 +73,7 @@ class ActiveRecord {
         $resultado = self::$db->query($queryUpdate);
 
         if($resultado) {
-            header('Location: /admin?resultado=1');
+            header('Location: /admin?resultado=2');
         }
 
     }
@@ -114,7 +114,7 @@ class ActiveRecord {
     //Asignar Keys y Values a Array Assoc para luego Sanitizar
     public function atributos() {
         $atributos = [];
-        foreach(self::$columnasDB as $columna) {
+        foreach(static::$columnasDB as $columna) {
             //Si $columna es igual a 'id' saltamos este loop y vamos al siguiente.
             if($columna === 'id') continue;
             //La Key sera el valor de cada variables
@@ -142,40 +142,15 @@ class ActiveRecord {
     //Validacion de Datos
     public static function getErrores() {
 
-        return self::$errores;
+        return static::$errores;
 
     }
 
     //Verificar Errores en Formulario
     public function validar() {
 
-        if(!$this->titulo) {
-            self::$errores[] = "Debes Añadir un Titulo";
-        }
-        if(!$this->precio) {
-            self::$errores[] = 'El Precio es Obligatorio';
-        }
-        if( strlen( $this->descripcion ) < 50 ) {
-            self::$errores[] = 'La Descripción es Obligatoria y Debe Tener al Menos 50 Caracteres';
-        }
-        if(!$this->habitaciones) {
-            self::$errores[] = 'El Número de Habitaciones es Obligatorio';
-        }
-        if(!$this->wc) {
-            self::$errores[] = 'El Número de Baños es Obligatorio';
-        }
-        if(!$this->estacionamientos) {
-            self::$errores[] = 'El Número de Lugares de Estacionamiento es Obligatorio';
-        }
-        if(!$this->vendedorId) {
-            self::$errores[] = 'Elige un Vendedor';
-        }
-
-        if(!$this->imagen) {
-            self::$errores[] = 'Se Debe Añadir una Imagen';
-        }
-
-        return self::$errores;
+        static::$errores = [];
+        return static::$errores;
 
     }
 
@@ -206,7 +181,7 @@ class ActiveRecord {
         //Asignar Todas las Propiedades como Obejetos al Array
         $array = [];
         foreach($propiedades as $propiedad) {
-            $array[] = self::crearObjeto($propiedad);
+            $array[] = static::crearObjeto($propiedad);
         }
 
         //Liberar Memoria (Mas que nada pasa Ayudar al Servidor)

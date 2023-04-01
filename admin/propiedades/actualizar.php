@@ -1,6 +1,7 @@
 <?php
 
     use App\Propiedad;
+    use App\Vendedor;
     use Intervention\Image\ImageManagerStatic as IMS;
 
     require "../../includes/app.php";
@@ -19,12 +20,9 @@
         header('Location: /admin');
     }
     
-    //Obetener Valores de Propiedades
+    //Obetener Datos de la Propiedad y Obtener los Vendedores
     $propiedad = Propiedad::find($idPropiedad);
-
-    //Obetener Valores de Vendedores
-    $querySelectVendedores = "SELECT * FROM vendedores";
-    $vendedores = mysqli_query($DB, $querySelectVendedores);
+    $vendedores = Vendedor::all();
 
     //Regristo para Campos Vacios
     $errores = Propiedad::getErrores();

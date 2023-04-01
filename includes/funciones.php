@@ -33,3 +33,30 @@ function s($html){
     $s = htmlspecialchars($html);
     return $s;
 }
+
+//Validad Contenido
+function validarContenido($contenido){
+    $aceptados = ['vendedor', 'propiedad'];
+    return in_array($contenido, $aceptados);
+}
+
+//Mostrar Mensajes
+function mostrarMesajes($cod) {
+    $mensaje = '';
+
+    switch($cod){
+        case 1:
+            $mensaje = 'Creado Correctamente';
+            break;
+        case 2:
+            $mensaje = 'Actualizado Correctamente';
+            break;
+        case 3:
+            $mensaje = 'Eliminado Correctamente';
+            break;
+        default:
+            $mensaje = false;
+            break;
+    }
+    return $mensaje;
+}
