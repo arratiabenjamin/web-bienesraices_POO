@@ -161,6 +161,15 @@ class ActiveRecord {
         $propiedades = self::consultarSQL($querySelectPropiedades);
         return $propiedades;
 
+
+    }
+    //Listar Propiedades con Limite
+    public static function getLimit($limit) {
+
+        $querySelectPropiedades = "SELECT * FROM " . static::$tabla . " LIMIT ". $limit; //Static hace Referencia a la Clase Hija.
+        $propiedades = self::consultarSQL($querySelectPropiedades);
+        return $propiedades;
+
     }
 
     public static function find($id) {

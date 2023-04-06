@@ -9,13 +9,11 @@
         <h2>Casas y Depas en Venta</h2>
 
         <?php 
-            $limite = 20;
             include "includes/templates/anuncios.php";
         ?>
 
     </main>
 
 <?php
-
     incluirTemplate('footer');
 ?>
